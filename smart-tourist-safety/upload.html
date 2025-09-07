@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload - Smart Tourist Safety System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Smart Tourist Safety System</h1>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="feed.html">Feed</a>
+            <a href="upload.html">Upload</a>
+            <a href="register.html">Register</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="map.html">Map</a>
+            <a href="profile.html">Profile</a>
+            <a href="incident.html">Report</a>
+            <a href="history.html">History</a>
+        </nav>
+    </header>
+    <main>
+        <section id="upload">
+            <h2>Share Your Travel Moment</h2>
+            <form id="uploadForm">
+                <label for="mediaType">Type:</label>
+                <select id="mediaType">
+                    <option value="photo">Photo</option>
+                    <option value="video">Video</option>
+                    <option value="reel">Reel</option>
+                </select>
+                <label for="mediaFile">Select File:</label>
+                <input type="file" id="mediaFile" accept="image/*,video/*" required>
+                <label for="caption">Caption:</label>
+                <textarea id="caption" placeholder="Tell your story..."></textarea>
+                <button type="submit">Post</button>
+            </form>
+            <div id="preview"></div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2023 Smart Tourist Safety System</p>
+    </footer>
+    <script src="social.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

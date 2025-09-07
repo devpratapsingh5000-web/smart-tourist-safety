@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Login - Smart Tourist Safety System</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <header>
+        <h1>Smart Tourist Safety Monitoring & Incident Response System</h1>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="register.html">Register Digital ID</a>
+            <a href="login.html">Login</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="incident.html">Report Incident</a>
+        </nav>
+    </header>
+    <main>
+        <section id="login">
+            <h2>User Login</h2>
+            <form id="loginForm">
+                <label for="uniqueID">Unique ID:</label>
+                <input type="text" id="uniqueID" required />
+                <label for="password">Password:</label>
+                <input type="password" id="password" required />
+                <button type="submit">Login</button>
+            </form>
+            <div id="loginStatus"></div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2023 Smart Tourist Safety System</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>

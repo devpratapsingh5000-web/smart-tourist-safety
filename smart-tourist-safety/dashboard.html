@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Smart Tourist Safety System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Smart Tourist Safety Monitoring & Incident Response System</h1>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="register.html">Register Digital ID</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="map.html">Interactive Map</a>
+            <a href="incident.html">Report Incident</a>
+            <a href="history.html">Incident History</a>
+        </nav>
+    </header>
+    <main>
+        <section id="dashboard">
+            <h2>Safety Dashboard</h2>
+            <div id="userID">Digital ID: Not registered</div>
+            <div id="locationStatus">Location: Unknown</div>
+            <div id="safetyStatus">Safety Status: Checking...</div>
+            <div id="dangerWarning" style="color: orange; font-weight: bold; margin-top: 10px;"></div>
+            <div id="map" style="height: 400px; width: 100%;"></div>
+            <div class="map-controls">
+                <button id="showSafeZones">Toggle Safe Zones</button>
+                <button id="locateMe">Locate Me</button>
+                <button id="reportHere">Report Here</button>
+            </div>
+            <button id="emergency">Emergency Call</button>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2023 Smart Tourist Safety System</p>
+    </footer>
+    <script src="blockchain.js"></script>
+    <script src="script.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="map.js"></script>
+</body>
+</html>
