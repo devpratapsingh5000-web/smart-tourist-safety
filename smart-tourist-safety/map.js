@@ -23,6 +23,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     loadSafeZones();
 
+    // Make loadSafeZones global
+    window.loadSafeZones = loadSafeZones;
+
     let safeZonesVisible = true;
 
     document.getElementById('showSafeZones').addEventListener('click', () => {

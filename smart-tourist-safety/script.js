@@ -1,5 +1,34 @@
 // Common functionality
 
+let currentOTP = null;
+let currentAuthority = null;
+
+function generateOTP() {
+    return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
+// Authority registration
+if (document.getElementById('authorityRegisterForm')) {
+    document.getElementById('authorityRegisterForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const name = document.getElementById('authName').value;
+        const email = document.getElementById('authEmail').value;
+        const aadhaar = document.getElementById('authAadhaar').value;
+        const pan = document.getElementById('authPAN').value;
+
+        let authorities = JSON.parse(localStorage.getItem('authorities')) || [];
+        if (authorities.find(a => a.aadhaar === aadhaar)) {
+            document.getElementById('authRegisterStatus').innerText = 'Authority with this Aadhaar already registered.';
+            return;
+        }
+
+        authorities.push({name, email, aadhaar, pan});
+        localStorage.setItem('authorities', JSON.stringify(authorities));
+        document.getElementById('authRegisterStatus').innerText = 'Registration successful!';
+        this.reset();
+    });
+}
+
 // Login form handler
 if (document.getElementById('loginForm')) {
     document.getElementById('loginForm').addEventListener('submit', function(e) {
@@ -320,4 +349,37 @@ if (document.getElementById('authorities-dashboard')) {
         document.getElementById('authStatus').innerText = `Logged in as ${loggedAuthority.name}`;
         showTab('zones');
     }
+}
+
+// Safe zone management
+let currentPolygon = null;
+let polygonPoints = [];
+
+if (document.getElementById('saveZone')) {
+    document.getElementById('saveZone').addEventListener('click', function() {
+        if (polygonPoints.length > 2) {
+            let zonesData = JSON.parse(localStorage.getItem('safeZones')) || [];
+            zonesData.push(polygonPoints);
+            localStorage.setItem('safeZones', JSON.stringify(zonesData));
+            document.getElementById('zoneStatus').innerText = 'Safe zone saved!';
+            // Reload zones
+            if (window.loadSafeZones) window.loadSafeZones();
+            polygonPoints = [];
+            if (currentPolygon) {
+                map.removeLayer(currentPolygon);
+                currentPolygon = null;
+            }
+        } else {
+            document.getElementById('zoneStatus').innerText = 'Need at least 3 points to save a zone.';
+        }
+    });
+}
+
+if (document.getElementById('clearZones')) {
+    document.getElementById('clearZones').addEventListener('click', function() {
+        localStorage.removeItem('safeZones');
+        document.getElementById('zoneStatus').innerText = 'All safe zones cleared!';
+        // Reload zones
+        if (window.loadSafeZones) window.loadSafeZones();
+    });
 }
