@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let safeZones = [];
 
     // Load safe zones from localStorage
-    function loadSafeZones() {
+    window.loadSafeZones = function() {
         safeZones.forEach(zone => map.removeLayer(zone));
         safeZones = [];
         const zonesData = JSON.parse(localStorage.getItem('safeZones')) || [];
@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    loadSafeZones();
+    window.loadSafeZones();
 
     // Make loadSafeZones global
     window.loadSafeZones = loadSafeZones;

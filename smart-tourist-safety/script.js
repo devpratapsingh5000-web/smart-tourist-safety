@@ -322,24 +322,35 @@ if (document.getElementById('authorityLoginForm')) {
     });
 }
 
-// Tab switching
-function showTab(tabName, event) {
-    const tabs = document.querySelectorAll('.tab-content');
-    tabs.forEach(tab => tab.style.display = 'none');
-    document.getElementById(tabName + '-tab').style.display = 'block';
-    const buttons = document.querySelectorAll('.tab-button');
-    buttons.forEach(btn => btn.classList.remove('active'));
-    if(event) {
-        event.target.classList.add('active');
+document.addEventListener('DOMContentLoaded', () => {
+    // Tab switching
+    function showTab(tabName, event) {
+        const tabs = document.querySelectorAll('.tab-content');
+        tabs.forEach(tab => tab.style.display = 'none');
+        document.getElementById(tabName + '-tab').style.display = 'block';
+        const buttons = document.querySelectorAll('.tab-button');
+        buttons.forEach(btn => btn.classList.remove('active'));
+        if(event) {
+            event.target.classList.add('active');
+        }
     }
-}
 
-// Fix tab button event handlers to pass event object
-document.querySelectorAll('.tab-button').forEach(button => {
-    button.addEventListener('click', function(event) {
-        const tabName = this.textContent.toLowerCase().split(' ').join('');
-        showTab(tabName, event);
+    // Fix tab button event handlers to pass event object
+    document.querySelectorAll('.tab-button').forEach(button => {
+        button.addEventListener('click', function(event) {
+            const tabName = this.textContent.toLowerCase().split(' ').join('');
+            showTab(tabName, event);
+        });
     });
+
+    // Initialize authority dashboard
+    if (document.getElementById('authorities-dashboard')) {
+        const loggedAuthority = JSON.parse(localStorage.getItem('loggedAuthority'));
+        if (loggedAuthority) {
+            document.getElementById('authStatus').innerText = `Logged in as ${loggedAuthority.name}`;
+            showTab('zones');
+        }
+    }
 });
 
 // Initialize authority dashboard
