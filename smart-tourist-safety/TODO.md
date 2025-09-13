@@ -22,3 +22,13 @@
 - [ ] Add safety statistics dashboard
 - [ ] Implement multi-language support
 - [ ] Add offline functionality
+- [x] Create authorities dashboard with registration, OTP login, and safe zone management
+  - [x] Create authorities-dashboard.html
+  - [x] Add authority registration form (Aadhaar, PAN)
+  - [x] Add OTP login for authorities
+  - [x] Add safe zone boundary drawing and saving
+  - [x] Update script.js for authority functions
+  - [x] Update map.js to load dynamic safe zones
+  - [x] Update geo-fencing to use dynamic zones
+  - [x] Add navigation link to authorities dashboard
+  - [ ] Test authorities dashboard functionality

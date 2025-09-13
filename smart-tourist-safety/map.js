@@ -98,6 +98,10 @@ document.addEventListener('DOMContentLoaded', () => {
         alert("To report an incident at this location, please go to the Report Incident page and enter the location details.");
     });
 
+    // Drawing variables for authorities
+    let drawingPolygon = null;
+    let drawingCoords = [];
+
     // Real-time location tracking variables
     let currentMarker;
     let accuracyCircle;

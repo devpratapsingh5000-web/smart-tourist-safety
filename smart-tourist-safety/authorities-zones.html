@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Authorities Zone Management - Smart Tourist Safety</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+    <style>
+        #map { height: 500px; margin-top: 10px; }
+        .zone-type-select {
+            margin-top: 10px;
+        }
+        .zone-list {
+            margin-top: 20px;
+        }
+        .zone-item {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Authorities Zone Management</h1>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="authorities-dashboard.html">Authorities Dashboard</a>
+            <a href="authorities-zones.html">Zone Management</a>
+        </nav>
+    </header>
+    <main>
+        <section>
+            <label for="addressInput">Enter Address or Place Name:</label>
+            <input type="text" id="addressInput" placeholder="Enter address or place name" size="50" />
+            <button id="searchAddressBtn">Search</button>
+            <div id="searchStatus"></div>
+        </section>
+        <section>
+            <label for="zoneType">Select Zone Type:</label>
+            <select id="zoneType" class="zone-type-select">
+                <option value="safe">Safe Zone</option>
+                <option value="unsafe">Unsafe Zone</option>
+            </select>
+        </section>
+        <section id="map"></section>
+        <button id="saveZoneBtn">Save Zone</button>
+        <button id="clearZonesBtn">Clear All Zones</button>
+        <div id="zoneStatus"></div>
+        <section class="zone-list" id="zoneList"></section>
+    </main>
+    <footer></footer>
+
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <script>
+        const map = L.map('map').setView([20.5937, 78.9629], 5); // Centered on India
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        let drawnPoints = [];
+        let drawnPolygon = null;
+        let zones = JSON.parse(localStorage.getItem('authoritiesZones')) || [];
+
+        function loadZones() {
+            zones.forEach(zone => {
+                if (zone.polygon) {
+                    map.removeLayer(zone.polygon);
+                }
+            });
+            zones = JSON.parse(localStorage.getItem('authoritiesZones')) || [];
+            zones.forEach(zone => {
+                const color = zone.type === 'safe' ? 'green' : 'red';
+                const polygon = L.polygon(zone.coords, {color: color, weight: 2, fillOpacity: 0.3}).addTo(map);
+                zone.polygon = polygon;
+            });
+            renderZoneList();
+        }
+
+        function renderZoneList() {
+            const zoneList = document.getElementById('zoneList');
+            zoneList.innerHTML = '';
+            zones.forEach((zone, index) => {
+                const div = document.createElement('div');
+                div.className = 'zone-item';
+                div.innerHTML = `<strong>Zone ${index + 1} (${zone.type}):</strong> ${zone.coords.length} points
+                    <button onclick="removeZone(${index})">Remove</button>`;
+                zoneList.appendChild(div);
+            });
+        }
+
+        function removeZone(index) {
+            if (zones[index].polygon) {
+                map.removeLayer(zones[index].polygon);
+            }
+            zones.splice(index, 1);
+            localStorage.setItem('authoritiesZones', JSON.stringify(zones));
+            loadZones();
+        }
+
+        map.on('click', function(e) {
+            drawnPoints.push([e.latlng.lat, e.latlng.lng]);
+            if (drawnPolygon) {
+                map.removeLayer(drawnPolygon);
+            }
+            if (drawnPoints.length > 2) {
+                drawnPolygon = L.polygon(drawnPoints, {color: 'blue', weight: 2, dashArray: '5,5'}).addTo(map);
+            }
+        });
+
+        map.on('dblclick', function() {
+            if (drawnPoints.length > 2) {
+                drawnPoints.push(drawnPoints[0]); // Close polygon
+                if (drawnPolygon) {
+                    map.removeLayer(drawnPolygon);
+                }
+                const zoneType = document.getElementById('zoneType').value;
+                const color = zoneType === 'safe' ? 'green' : 'red';
+                drawnPolygon = L.polygon(drawnPoints, {color: color, weight: 3, fillOpacity: 0.4}).addTo(map);
+            }
+        });
+
+        document.getElementById('saveZoneBtn').addEventListener('click', function() {
+            if (drawnPoints.length > 2) {
+                const zoneType = document.getElementById('zoneType').value;
+                zones.push({coords: drawnPoints, type: zoneType});
+                localStorage.setItem('authoritiesZones', JSON.stringify(zones));
+                drawnPoints = [];
+                if (drawnPolygon) {
+                    map.removeLayer(drawnPolygon);
+                    drawnPolygon = null;
+                }
+                loadZones();
+                document.getElementById('zoneStatus').innerText = 'Zone saved successfully.';
+            } else {
+                document.getElementById('zoneStatus').innerText = 'Draw a polygon first.';
+            }
+        });
+
+        document.getElementById('clearZonesBtn').addEventListener('click', function() {
+            zones.forEach(zone => {
+                if (zone.polygon) {
+                    map.removeLayer(zone.polygon);
+                }
+            });
+            zones = [];
+            localStorage.removeItem('authoritiesZones');
+            document.getElementById('zoneList').innerHTML = '';
+            document.getElementById('zoneStatus').innerText = 'All zones cleared.';
+        });
+
+        document.getElementById('searchAddressBtn').addEventListener('click', function() {
+            const address = document.getElementById('addressInput').value;
+            if (!address) {
+                document.getElementById('searchStatus').innerText = 'Please enter an address or place name.';
+                return;
+            }
+            document.getElementById('searchStatus').innerText = 'Searching...';
+            L.Control.Geocoder.nominatim().geocode(address, function(results) {
+                if (results.length === 0) {
+                    document.getElementById('searchStatus').innerText = 'Address not found.';
+                    return;
+                }
+                const result = results[0];
+                document.getElementById('searchStatus').innerText = `Found: ${result.name}`;
+                map.setView(result.center, 15);
+                // Add marker for searched location
+                if (window.searchMarker) {
+                    map.removeLayer(window.searchMarker);
+                }
+                window.searchMarker = L.marker(result.center).addTo(map).bindPopup(result.name).openPopup();
+            });
+        });
+
+        loadZones();
+    </script>
+</body>
+</html>
