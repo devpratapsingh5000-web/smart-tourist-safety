@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Login - Smart Tourist Safety System</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <header>
+        <h1>Login to Smart Tourist Safety System</h1>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="register.html">Register</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="authorities-dashboard.html">Authorities</a>
+        </nav>
+    </header>
+    <main>
+        <section id="login-section">
+            <h2>User Login</h2>
+            <form id="userLoginForm">
+                <label for="loginAadhaar">Aadhaar Number:</label>
+                <input type="text" id="loginAadhaar" pattern="\d{12}" maxlength="12" required />
+                <button type="button" id="loginGenerateOTP">Generate OTP</button>
+                <div id="loginOTPSection" style="display:none;">
+                    <label for="loginOTP">Enter OTP:</label>
+                    <input type="text" id="loginOTP" maxlength="6" />
+                    <button type="submit">Login</button>
+                </div>
+                <div id="loginStatus"></div>
+            </form>
+        </section>
+    </main>
+    <footer></footer>
+    <script src="script.js"></script>
+</body>
+</html>

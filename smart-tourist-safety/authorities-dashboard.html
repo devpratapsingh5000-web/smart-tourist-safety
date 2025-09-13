@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authorities Dashboard - Smart Tourist Safety System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Smart Tourist Safety Monitoring & Incident Response System - Authorities</h1>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="authorities-dashboard.html">Authorities Dashboard</a>
+            <a href="dashboard.html">Tourist Dashboard</a>
+            <a href="map.html">Interactive Map</a>
+        </nav>
+    </header>
+    <main>
+        <section id="authorities-dashboard">
+            <h2>Authorities Dashboard</h2>
+            <div id="authStatus">Not logged in</div>
+
+            <div class="tab-container">
+                <button class="tab-button active" id="tab-register">Register Authority</button>
+                <button class="tab-button" id="tab-login">Login with OTP</button>
+                <button class="tab-button" id="tab-zones">Manage Safe Zones</button>
+            </div>
+
+            <div id="register-tab" class="tab-content">
+                <h3>Authority Registration</h3>
+                <form id="authorityRegisterForm">
+                    <label for="authName">Full Name:</label>
+                    <input type="text" id="authName" required>
+                    <label for="authEmail">Email:</label>
+                    <input type="email" id="authEmail" required>
+                    <label for="authAadhaar">Aadhaar Number:</label>
+                    <input type="text" id="authAadhaar" pattern="\d{12}" required>
+                    <label for="authPAN">PAN Card Number:</label>
+                    <input type="text" id="authPAN" pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}" required>
+                    <button type="submit">Register</button>
+                </form>
+                <div id="authRegisterStatus"></div>
+            </div>
+
+            <div id="login-tab" class="tab-content" style="display:none;">
+                <h3>Authority Login</h3>
+                <form id="authorityLoginForm">
+                    <label for="loginAadhaar">Aadhaar Number:</label>
+                    <input type="text" id="loginAadhaar" pattern="\d{12}" required>
+                    <button type="button" id="generateOTP">Generate OTP</button>
+                    <label for="otp">OTP:</label>
+                    <input type="text" id="otp" required>
+                    <button type="submit">Login</button>
+                </form>
+                <div id="authLoginStatus"></div>
+                <div id="otpDisplay" style="display:none;"></div>
+            </div>
+
+            <div id="zones-tab" class="tab-content" style="display:none;">
+                <h3>Manage Safe Zones</h3>
+                <p>Click on the map to draw a polygon for a new safe zone. Double-click to finish.</p>
+                <div id="map" style="height: 500px; width: 100%;"></div>
+                <button id="saveZone">Save Safe Zone</button>
+                <button id="clearZones">Clear All Zones</button>
+                <div id="zoneStatus"></div>
+            </div>
+        </section>
+    </main>
+    <footer>
+    </footer>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="script.js"></script>
+    <script src="map.js"></script>
+</body>
+</html>

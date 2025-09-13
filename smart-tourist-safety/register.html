@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Digital ID - Smart Tourist Safety System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Smart Tourist Safety Monitoring & Incident Response System</h1>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="register.html">Register Digital ID</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="map.html">Interactive Map</a>
+            <a href="incident.html">Report Incident</a>
+            <a href="history.html">Incident History</a>
+        </nav>
+    </header>
+    <main>
+        <section id="register">
+            <h2>Register Your Blockchain-Based Digital ID</h2>
+            <form id="registerForm">
+                <label for="name">Full Name:</label>
+                <input type="text" id="name" required>
+                <label for="email">Email:</label>
+                <input type="email" id="email" required>
+                <label for="password">Password:</label>
+                <input type="password" id="password" required>
+                <button type="submit">Register</button>
+            </form>
+            <div id="registrationStatus"></div>
+        </section>
+    </main>
+    <footer>
+    </footer>
+    <script src="blockchain.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

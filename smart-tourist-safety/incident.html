@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Incident - Smart Tourist Safety System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Smart Tourist Safety Monitoring & Incident Response System</h1>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="register.html">Register Digital ID</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="map.html">Interactive Map</a>
+            <a href="incident.html">Report Incident</a>
+            <a href="history.html">Incident History</a>
+        </nav>
+    </header>
+    <main>
+        <section id="incident">
+            <h2>Report an Incident</h2>
+            <form id="incidentForm">
+                <label for="incidentType">Incident Type:</label>
+                <select id="incidentType" required>
+                    <option value="theft">Theft</option>
+                    <option value="assault">Assault</option>
+                    <option value="medical">Medical Emergency</option>
+                    <option value="lost">Lost</option>
+                    <option value="other">Other</option>
+                </select>
+                <label for="description">Description:</label>
+                <textarea id="description" required></textarea>
+                <label for="location">Location:</label>
+                <input type="text" id="location" required>
+                <button type="submit">Submit Report</button>
+            </form>
+            <div id="reportStatus"></div>
+        </section>
+        <section id="chatbot">
+            <h2>AI Assistance Chatbot</h2>
+            <div id="chatMessages"></div>
+            <input type="text" id="chatInput" placeholder="Ask for help...">
+            <button id="sendChat">Send</button>
+        </section>
+    </main>
+    <footer>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+# Smart Tourist Safety Monitoring and Incident Response System - TODO
+
+- [x] Create index.html (home page with navigation)
+- [x] Create register.html (digital ID registration page)
+- [x] Create dashboard.html (monitoring dashboard with geo-fencing)
+- [x] Create incident.html (incident reporting page with AI chatbot)
+- [x] Create style.css (professional styling)
+- [x] Create script.js (main JavaScript functionality)
+- [x] Create blockchain.js (mock blockchain for digital ID)
+- [x] Implement geo-fencing logic in dashboard
+- [x] Implement AI chatbot for incident assistance
+- [x] Test website functionality in browser
+- [x] Add interactive map page with Leaflet.js
+- [x] Enhance AI chatbot with advanced responses
+- [x] Add real-time notifications
+- [x] Create incident history page
+- [x] Implement emergency contact system
+- [x] Add real-time location tracking and enhanced map system
+- [x] Transform into Instagram-like social platform with posts, reels, and feed
+- [ ] Add predictive safety features
+- [ ] Enhance geo-fencing with multiple zones
+- [ ] Add safety statistics dashboard
+- [ ] Implement multi-language support
+- [ ] Add offline functionality
+- [x] Create authorities dashboard with registration, OTP login, and safe zone management
+  - [x] Create authorities-dashboard.html
+  - [x] Add authority registration form (Aadhaar, PAN)
+  - [x] Add OTP login for authorities
+  - [x] Add safe zone boundary drawing and saving
+  - [x] Update script.js for authority functions
+  - [x] Update map.js to load dynamic safe zones
+  - [x] Update geo-fencing to use dynamic zones
+  - [x] Add navigation link to authorities dashboard
+  - [ ] Test authorities dashboard functionality
