@@ -1,11 +1,5 @@
 // Common functionality
 
-function generateUniqueID() {
-    return 'ID-' + Math.random().toString(36).substr(2, 9).toUpperCase();
-}
-
-... (existing registration code above) ...
-
 // Login form handler
 if (document.getElementById('loginForm')) {
     document.getElementById('loginForm').addEventListener('submit', function(e) {
@@ -41,12 +35,18 @@ function initDashboard() {
 
 
 function checkGeoFence(lat, lng) {
-    // Define safe zones (example: around major tourist areas)
-    const safeZones = [
-        { latMin: 40.7, latMax: 40.8, lngMin: -74.1, lngMax: -74.0 }, // Example: NYC
-        { latMin: 51.5, latMax: 51.6, lngMin: -0.1, lngMax: 0.0 }   // Example: London
-    ];
-    return safeZones.some(zone => lat >= zone.latMin && lat <= zone.latMax && lng >= zone.lngMin && lng <= zone.lngMax);
+    const zonesData = JSON.parse(localStorage.getItem('safeZones')) || [];
+    return zonesData.some(coords => {
+        // Check if point is inside polygon
+        let inside = false;
+        for (let i = 0, j = coords.length - 1; i < coords.length; j = i++) {
+            if (((coords[i][1] > lng) !== (coords[j][1] > lng)) &&
+                (lat < (coords[j][0] - coords[i][0]) * (lng - coords[i][1]) / (coords[j][1] - coords[i][1]) + coords[i][0])) {
+                inside = !inside;
+            }
+        }
+        return inside;
+    });
 }
 
 // Define dangerous zones
@@ -124,8 +124,18 @@ const aiResponses = {
 };
 
 if (document.getElementById('sendChat')) {
-    document.getElementById('sendChat').addEventListener('click', function() {
-        const input = document.getElementById('chatInput').value.toLowerCase();
+    const chatInput = document.getElementById('chatInput');
+    const sendChatBtn = document.getElementById('sendChat');
+    const chatMessages = document.getElementById('chatMessages');
+
+    function processUserInput() {
+        const input = chatInput.value.trim().toLowerCase();
+        if (!input) return;
+
+        // Display user message
+        chatMessages.innerHTML += `<p><strong>You:</strong> ${chatInput.value}</p>`;
+
+        // Real-time AI response without delay
         let response = 'I\'m here to help. Can you provide more details about your situation?';
         for (let key in aiResponses) {
             if (input.includes(key)) {
@@ -133,17 +143,18 @@ if (document.getElementById('sendChat')) {
                 break;
             }
         }
-        const chatMessages = document.getElementById('chatMessages');
-        chatMessages.innerHTML += `<p><strong>You:</strong> ${document.getElementById('chatInput').value}</p>`;
         chatMessages.innerHTML += `<p><strong>AI:</strong> ${response}</p>`;
         chatMessages.scrollTop = chatMessages.scrollHeight;
-        document.getElementById('chatInput').value = '';
-    });
+
+        chatInput.value = '';
+    }
+
+    sendChatBtn.addEventListener('click', processUserInput);
 
     // Allow Enter key to send
-    document.getElementById('chatInput').addEventListener('keypress', function(e) {
+    chatInput.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
-            document.getElementById('sendChat').click();
+            processUserInput();
         }
     });
 }
@@ -191,4 +202,122 @@ if (document.getElementById('emergency')) {
     document.getElementById('emergency').addEventListener('click', () => {
         alert('Emergency! Calling 911... (In real app, this would dial)');
     });
+}
+
+if (document.getElementById('registerAadhaar')) {
+    document.getElementById('registerAadhaar').addEventListener('input', function() {
+        const aadhaar = this.value;
+        if (aadhaar.length === 12 && /^\d{12}$/.test(aadhaar)) {
+            document.getElementById('generateUserOTP').disabled = false;
+        } else {
+            document.getElementById('generateUserOTP').disabled = true;
+        }
+    });
+}
+
+if (document.getElementById('generateUserOTP')) {
+    document.getElementById('generateUserOTP').addEventListener('click', function() {
+        const aadhaar = document.getElementById('registerAadhaar').value;
+        userCurrentOTP = generateUserOTP();
+        userCurrentAadhaar = aadhaar;
+        document.getElementById('userOTPDisplay').innerText = `OTP: ${userCurrentOTP} (In real app, this would be sent via SMS)`;
+        document.getElementById('userOTPDisplay').style.display = 'block';
+        document.getElementById('userRegisterStatus').innerText = 'OTP generated. Enter it below to complete registration.';
+        document.getElementById('userOTPSection').style.display = 'block';
+    });
+}
+
+if (document.getElementById('userRegisterForm')) {
+    document.getElementById('userRegisterForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const otp = document.getElementById('userOTP').value;
+        if (otp === userCurrentOTP && userCurrentAadhaar) {
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+            if (users.find(u => u.aadhaar === userCurrentAadhaar)) {
+                document.getElementById('userRegisterStatus').innerText = 'User with this Aadhaar already registered.';
+                return;
+            }
+
+            // Generate unique ID for user
+            const uniqueID = 'ID-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+
+            users.push({name, email, aadhaar: userCurrentAadhaar, password, uniqueID});
+            localStorage.setItem('users', JSON.stringify(users));
+            document.getElementById('userRegisterStatus').innerText = `Registration successful! Your Unique ID: ${uniqueID}`;
+            this.reset();
+            document.getElementById('userOTPSection').style.display = 'none';
+            userCurrentOTP = null;
+            userCurrentAadhaar = null;
+        } else {
+            document.getElementById('userRegisterStatus').innerText = 'Invalid OTP. Please try again.';
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Authority login
+    if (document.getElementById('generateOTP')) {
+        document.getElementById('generateOTP').addEventListener('click', function() {
+            const aadhaar = document.getElementById('loginAadhaar').value;
+            let authorities = JSON.parse(localStorage.getItem('authorities')) || [];
+            const authority = authorities.find(a => a.aadhaar === aadhaar);
+            if (authority) {
+                currentOTP = generateOTP();
+                currentAuthority = authority;
+                document.getElementById('otpDisplay').innerText = `OTP: ${currentOTP} (In real app, this would be sent via SMS)`;
+                document.getElementById('otpDisplay').style.display = 'block';
+                document.getElementById('authLoginStatus').innerText = 'OTP generated. Enter it below.';
+            } else {
+                document.getElementById('authLoginStatus').innerText = 'Aadhaar not found. Please register first.';
+            }
+        });
+    }
+});
+
+if (document.getElementById('authorityLoginForm')) {
+    document.getElementById('authorityLoginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const otp = document.getElementById('otp').value;
+        if (otp === currentOTP && currentAuthority) {
+            localStorage.setItem('loggedAuthority', JSON.stringify(currentAuthority));
+            document.getElementById('authStatus').innerText = `Logged in as ${currentAuthority.name}`;
+            document.getElementById('authLoginStatus').innerText = 'Login successful!';
+            showTab('zones'); // Switch to zones tab
+        } else {
+            document.getElementById('authLoginStatus').innerText = 'Invalid OTP.';
+        }
+    });
+}
+
+// Tab switching
+function showTab(tabName, event) {
+    const tabs = document.querySelectorAll('.tab-content');
+    tabs.forEach(tab => tab.style.display = 'none');
+    document.getElementById(tabName + '-tab').style.display = 'block';
+    const buttons = document.querySelectorAll('.tab-button');
+    buttons.forEach(btn => btn.classList.remove('active'));
+    if(event) {
+        event.target.classList.add('active');
+    }
+}
+
+// Fix tab button event handlers to pass event object
+document.querySelectorAll('.tab-button').forEach(button => {
+    button.addEventListener('click', function(event) {
+        const tabName = this.textContent.toLowerCase().split(' ').join('');
+        showTab(tabName, event);
+    });
+});
+
+// Initialize authority dashboard
+if (document.getElementById('authorities-dashboard')) {
+    const loggedAuthority = JSON.parse(localStorage.getItem('loggedAuthority'));
+    if (loggedAuthority) {
+        document.getElementById('authStatus').innerText = `Logged in as ${loggedAuthority.name}`;
+        showTab('zones');
+    }
 }
